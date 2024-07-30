@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   error.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aperez-b <aperez-b@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ogoman <ogoman@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/31 13:10:05 by aperez-b          #+#    #+#             */
-/*   Updated: 2022/02/28 19:24:24 by aperez-b         ###   ########.fr       */
+/*   Updated: 2024/07/15 10:38:27 by ogoman           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ int	cub_perror(t_cub_err err, t_game *g, char *param, int c)
 	if (!c)
 		return (0);
 	cub_end(g);
-	write(2, "cub3d: ", 7 * (err != end));
+	write(2, "cub3d: ", 7 * (err != end)); //  умножение на 0 или 1 позволяет контролировать вывод 
 	write(2, "invalid number of arguments\n", 28 * (err == inv_argc));
 	write(2, "cub3D not run in root of the project\n", 37 * (err == inv_pwd));
 	write(2, "file must be of .cub type\n", 26 * (err == inv_ext));

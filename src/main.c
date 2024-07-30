@@ -3,23 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aperez-b <aperez-b@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ogoman <ogoman@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/01/25 15:24:16 by aperez-b          #+#    #+#             */
-/*   Updated: 2022/03/03 11:01:51 by aperez-b         ###   ########.fr       */
+/*   Created: 2024/07/15 09:42:14 by ogoman            #+#    #+#             */
+/*   Updated: 2024/07/15 11:27:22 by ogoman           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/cub3d.h"
 
-static void	check_file(int argc, char **argv)
+static void check_file(int argc, char **argv)
 {
-	int	fd;
+	int fd;
 
-	cub_perror(inv_argc, NULL, NULL, argc != 2);
-	if (!ft_strncmp(argv[1], "-h", 3) || \
-		!ft_strncmp(argv[1], "--help", 7))
-		cub_usage(0);
+	cub_perror(inv_argc, NULL, NULL, argc != 2); // esli ne ravno 2 vizivaetsja cub_perror
 	fd = open(argv[1], O_RDONLY);
 	close(fd);
 	cub_perror(inv_file, NULL, argv[1], fd < 0);
@@ -27,64 +24,73 @@ static void	check_file(int argc, char **argv)
 		cub_perror(inv_ext, NULL, NULL, 1);
 }
 
-void	init_sprites(t_game *g)
+void init_sprites(t_game *g)
 {
-	g->win_img.i = NULL;
-	g->win_g.i = NULL;
-	g->win_r.i = NULL;
-	g->minimap.i = NULL;
-	g->miniview.i = NULL;
-	g->tex.n = NULL;
-	g->tex.n_bak = NULL;
-	g->tex.s = NULL;
-	g->tex.s_bak = NULL;
-	g->tex.e = NULL;
-	g->tex.e_bak = NULL;
-	g->tex.w = NULL;
-	g->tex.w_bak = NULL;
-	g->tex.b = mlx_load_img(g->mlx_ptr, "textures/black.xpm");
-	g->scope = mlx_load_img(g->mlx_ptr, "textures/scope.xpm");
-	if (!g->tex.b || !g->tex.b->i || !g->scope || !g->scope->i)
-		cub_perror(inv_pwd, g, NULL, 1);
+    // Инициализация указателей на изображения и текстуры.
+    // Указатели на изображения и текстуры устанавливаются в NULL, чтобы избежать доступа к неинициализированным указателям.
+    g->win_img.i = NULL;    // Указатель на изображение окна
+    g->win_g.i = NULL;      // Указатель на изображение гейма
+    g->win_r.i = NULL;      // Указатель на изображение результата
+    g->minimap.i = NULL;    // Указатель на миникарту
+    g->miniview.i = NULL;   // Указатель на минивид
+    g->tex.n = NULL;        // Указатель на текстуру севера
+    g->tex.n_bak = NULL;    // Резервный указатель на текстуру севера
+    g->tex.s = NULL;        // Указатель на текстуру юга
+    g->tex.s_bak = NULL;    // Резервный указатель на текстуру юга
+    g->tex.e = NULL;        // Указатель на текстуру востока
+    g->tex.e_bak = NULL;    // Резервный указатель на текстуру востока
+    g->tex.w = NULL;        // Указатель на текстуру запада
+    g->tex.w_bak = NULL;    // Резервный указатель на текстуру запада
+
+    // Загрузка текстур из файлов.
+    // Функция mlx_load_img загружает изображения из файлов и возвращает указатели на них.
+    g->tex.b = mlx_load_img(g->mlx_ptr, "textures/black.xpm"); // Загрузка текстуры черного цвета
+    g->scope = mlx_load_img(g->mlx_ptr, "textures/scope.xpm"); // Загрузка текстуры прицела
+
+    // Проверка успешности загрузки текстур.
+    // Если какая-либо текстура не загрузилась (указатель NULL), выводится ошибка и программа завершается.
+    if (!g->tex.b || !g->tex.b->i || !g->scope || !g->scope->i)
+        cub_perror(inv_pwd, g, NULL, 1); // Обработка ошибки загрузки текстур
 }
 
-static t_game	cub_init(void)
-{
-	t_game	g;
 
-	g.width = 0;
-	g.fd = -1;
-	g.height = 0;
-	g.nframes = 0;
-	g.map = NULL;
-	g.pl.dir = 0;
-	g.mlx_ptr = NULL;
-	g.win_ptr = NULL;
-	g.mlx_ptr = mlx_init();
-	init_sprites(&g);
-	g.tex.floor = -1;
-	g.tex.ceiling = -1;
-	g.pl.x = -1;
-	g.pl.y = -1;
-	g.pl.speed = 0.12;
-	g.pl.door_cooldown = 0;
-	ft_bzero(&g.pl.keys, sizeof(t_key));
-	g.mouse_x = 0;
-	g.neg = -1;
-	g.rate = 30;
-	return (g);
+static t_game cub_init(void)
+{
+	t_game g;
+
+	g.width = 0;						 // Ширина окна, инициализируется нулём
+	g.height = 0;						 // Высота окна, инициализируется нулём
+	g.fd = -1;							 // Дескриптор файла, -1 означает, что файл ещё не открыт
+	g.nframes = 0;						 // Счетчик кадров, инициализируется нулём
+	g.pl.dir = 0;						 // Направление игрока, инициализируется нулём
+	g.map = NULL;						 // Указатель на карту, инициализируется NULL (пусто)
+	g.mlx_ptr = NULL;					 // Указатель на MLX (MiniLibX), инициализируется NULL
+	g.win_ptr = NULL;					 // Указатель на окно, инициализируется NULL
+	g.mlx_ptr = mlx_init();				 // Инициализация MLX
+	g.tex.floor = -1;					 // Цвет пола, -1 указывает на неинициализированное значение
+	g.tex.ceiling = -1;					 // Цвет потолка, -1 указывает на неинициализированное значение
+	g.pl.x = -1;						 // Позиция игрока по X, -1 означает, что позиция не задана
+	g.pl.y = -1;						 // Позиция игрока по Y, -1 означает, что позиция не задана
+	g.pl.speed = 0.12;					 // Скорость игрока, инициализирована значением 0.12
+	g.pl.door_cooldown = 0;				 // Охлаждение двери, инициализируется нулём
+	g.mouse_x = 0;						 // Положение мыши по X, инициализируется нулём
+	g.neg = -1;							 // Некий флаг, инициализируется -1 (возможно, указывает на состояние)
+	g.rate = 30;						 // Частота кадров или обновления, инициализируется значением 30
+	init_sprites(&g);					 // Инициализация спрайтов
+	ft_bzero(&g.pl.keys, sizeof(t_key)); // Обнуление структуры клавиш игрока
+
+	return (g); // Возвращает инициализированную структуру игры
 }
 
-int	main(int argc, char **argv)
+int main(int argc, char **argv)
 {
-	t_game	g;
-	char	**aux;
+	t_game g;
+	char **aux;
 
 	check_file(argc, argv);
 	g = cub_init();
 	read_map(argv[1], &g);
-	cub_perror(inv_tex, &g, NULL, !g.tex.n || !g.tex.s || !g.tex.e || \
-		!g.tex.w);
+	cub_perror(inv_tex, &g, NULL, !g.tex.n || !g.tex.s || !g.tex.e || !g.tex.w);
 	cub_perror(inv_color, &g, NULL, g.tex.floor == -1 || g.tex.ceiling == -1);
 	aux = square_map(&g);
 	ft_free_matrix(&g.map);

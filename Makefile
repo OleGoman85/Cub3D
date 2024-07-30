@@ -437,8 +437,8 @@
 # .PHONY: all clean fclean re
 
 
-# Основные настройки
 CC = gcc
+RM = rm -rf
 CFLAGS = -Wall -Wextra -Werror
 LMLX = -Lminilibx-linux -lmlx -lXext -lX11 -lm
 
@@ -452,6 +452,9 @@ LIBFT = libft/libft.a
 SRC_DIR = src
 GNL_DIR = get_next_line
 LIBFT_DIR = libft
+
+BGreen=\033[1;32m
+BRed=\033[1;31m
 
 # Исходные файлы
 SRC_GNL = get_next_line.c get_next_line_utils.c
@@ -468,31 +471,50 @@ ALL_SRC = $(addprefix $(SRC_DIR)/, $(SRC)) $(addprefix $(GNL_DIR)/, $(SRC_GNL))
 OBJ = $(ALL_SRC:.c=.o)
 
 # Основная цель
-all: $(NAME)
+all: tag $(NAME)
 
 # Сборка исполняемого файла
-$(NAME): $(LIBFT) $(OBJ)
-	$(CC) $(CFLAGS) $(OBJ) $(LIBFT) $(LMLX) -o $@
+$(NAME): $(LIBFT) $(OBJ) tag
+	@echo "\n               $(BGreen)Building target file: $(NAME)"
+	@$(CC) $(CFLAGS) $(OBJ) $(LIBFT) $(LMLX) -o $@ > /dev/null
+	@echo "$(BGreen)                   🕹  LET'S BEGIN!!! 🎮"
 
 # Компиляция исходных файлов в объектные
 %.o: %.c
-	$(CC) $(CFLAGS) -Iminilibx-linux -Ilibft -c $< -o $@
+	@$(CC) $(CFLAGS) -Iminilibx-linux -Ilibft -c $< -o $@ > /dev/null
 
 # Сборка библиотеки libft
 $(LIBFT):
-	make -C $(LIBFT_DIR)
+	@$(MAKE) -C $(LIBFT_DIR) > /dev/null
 
 # Очистка
 clean:
-	make -C $(LIBFT_DIR) clean
-	rm -f $(OBJ)
+	@echo "$(BRed)Cleaning......"
+	@$(MAKE) -C $(LIBFT_DIR) clean > /dev/null
+	@$(RM) $(OBJ) .tag
+	@echo "              ............ READY"
 
 # Полная очистка
 fclean: clean
-	make -C $(LIBFT_DIR) fclean
-	rm -f $(NAME)
+	@$(MAKE) -C $(LIBFT_DIR) fclean > /dev/null
+	@$(RM) $(NAME)
 
 # Пересборка
 re: fclean all
 
 .PHONY: all clean fclean re
+
+tag:
+	@if [ ! -e .tag ]; then \
+		echo "$(BGreen)"; \
+		echo "	██████╗ ██╗   ██╗██████╗ ██████╗ ██████╗"; \
+		echo " 	██╔════╝██║   ██║██╔══██╗╚════██╗██╔══██╗"; \
+		echo "	██║     ██║   ██║██████╔╝ █████╔╝██║  ██║"; \
+		echo "	██║     ██║   ██║██╔══██╗ ╚═══██╗██║  ██║"; \
+		echo "	╚██████╗╚██████╔╝██████╔╝██████╔╝██████╔╝"; \
+		echo "	╚═════╝ ╚═════╝ ╚═════╝ ╚═════╝ ╚═════╝ "; \
+  		touch .tag; \
+	fi        
+
+                                
+                                
