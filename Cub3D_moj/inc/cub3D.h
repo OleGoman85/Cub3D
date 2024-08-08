@@ -6,7 +6,7 @@
 /*   By: ogoman <ogoman@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 09:40:40 by ogoman            #+#    #+#             */
-/*   Updated: 2024/07/30 10:20:40 by ogoman           ###   ########.fr       */
+/*   Updated: 2024/08/08 10:59:42 by ogoman           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 # include "keycodes.h"
 # include <mlx.h>
 # include "get_next_line.h"
-# include "my_mlx.h"
+# include "game_mlx.h"
 # include <stdio.h>
 # include <stdlib.h>
 # include <math.h>
@@ -35,121 +35,118 @@
 #  define SIZE 7
 # endif
 
-/* Enum to handle various exit/error messages */
+/* Перечисление для обработки различных сообщений об ошибках */
 typedef enum e_cub_err
 {
-	end, // 0
-	inv_ac, // 1
-	inv_ext,
-	inv_file,
-	empty_file,
-	no_memory,
-	inv_color,
-	inv_wall,
-	inv_map,
-	inv_charac,
-	inv_player,
-	inv_tex, // 11
-	inv_pwd //12
-}				t_cub_err;
+    ERR_END,          // Конец программы
+    ERR_INV_AC,       // Неверный доступ
+    ERR_INV_EXT,      // Неверное расширение файла
+    ERR_INV_FILE,     // Неверный файл
+    ERR_EMPTY_FILE,   // Пустой файл
+    ERR_OUT_OF_MEMORY,    // Нет памяти
+    ERR_INV_COLOR,    // Неверный цвет
+    ERR_INV_WALL,     // Неверная стена
+    ERR_INV_MAP,      // Неверная карта
+    ERR_INV_CHARAC,   // Неверный символ
+    ERR_INV_PLAYER,   // Неверный игрок
+    ERR_INV_TEX,      // Неверная текстура
+    ERR_INV_PATH       // Неверный путь
+} t_cub_err;
 
-/* Struct to handle rgb colors with transparency */
+/* Структура для хранения цветов с прозрачностью */
 typedef struct s_color
 {
-	long	t;
-	long	r;
-	long	g;
-	long	b;
-}				t_color;
+    long alpha; // Прозрачность
+    long red; // Красный цвет
+    long green; // Зеленый цвет
+    long blue; // Синий цвет
+} t_color;
 
-/* Every image corresponding to a wall texture, plus floor and ceiling */
+/* Структура для хранения текстур стен, пола и потолка */
 typedef struct s_tex
 {
-	t_list	*n;       // Список текстур для северной стены (North)
-	t_list	*n_bak;   // Резервная копия текстур для северной стены
-	t_list	*s;       // Список текстур для южной стены (South)
-	t_list	*s_bak;   // Резервная копия текстур для южной стены
-	t_list	*w;       // Список текстур для западной стены (West)
-	t_list	*w_bak;   // Резервная копия текстур для западной стены
-	t_list	*e;       // Список текстур для восточной стены (East)
-	t_list	*e_bak;   // Резервная копия текстур для восточной стены
-	t_img	*b;       // Текстура для пола или потолка (неясно из названия, может быть фон)
-	int		floor;    // Цвет пола в формате RGB (например, 0xRRGGBB)
-	int		ceiling;  // Цвет потолка в формате RGB
-}				t_tex;
+    t_list *n;       // Список текстур для северной стены
+    t_list *s;       // Список текстур для южной стены
+    t_list *w;       // Список текстур для западной стены
+    t_list *e;       // Список текстур для восточной стены
+    t_img *b;        // Текстура для пола или потолка
+    int floor;       // Цвет пола в формате RGB (например, 0xRRGGBB)
+    int ceiling;     // Цвет потолка в формате RGB
+} t_tex;
 
-
-/* Struct to check when keys are pressed */
+/* Структура для хранения состояний клавиш */
 typedef struct s_key
 {
-	int	w_pressed;
-	int	a_pressed;
-	int	s_pressed;
-	int	d_pressed;
-	int	left_pressed;
-	int	right_pressed;
-}				t_key;
+    int w_pressed;      // Клавиша W нажата
+    int a_pressed;      // Клавиша A нажата
+    int s_pressed;      // Клавиша S нажата
+    int d_pressed;      // Клавиша D нажата
+    int left_pressed;   // Клавиша влево нажата
+    int right_pressed;  // Клавиша вправо нажата
+} t_key;
 
-/* Struct to store various attributes of our player */
+/* Структура для хранения атрибутов игрока */
 typedef struct s_player
 {
-	float	x;
-	float	y;
-	char	dir;
-	float	speed;
-	int		door_cooldown;
-	t_key	keys;
-}				t_player;
+    float position_x;    // Позиция игрока по оси X
+    float position_y;    // Позиция игрока по оси Y
+    char dir;           // Направление игрока
+    float speed;        // Скорость игрока
+    int door_cooldown;  // Таймер для взаимодействия с дверями
+    t_key keys;         // Состояние клавиш игрока
+} t_player;
 
-/* Struct to store all ray-casting-related data */
+/* Структура для хранения данных по лучам */
 typedef struct s_ray
 {
-	float	incre_angle;
-	float	angle;
-	float	cos;
-	float	sin;
-	float	hfov;
-	float	lim;
-	int		precision;
-}				t_ray;
+    float angle_increment; // Угол между лучами
+    float current_angle;       // Текущий угол луча
+    float cos;         // Косинус угла луча
+    float sin;         // Синус угла луча
+    float hfov;        // Горизонтальное поле зрения
+    float max_distance;         // Предел расстояния для лучей
+    int precision;     // Точность расчета лучей
+} t_ray;
 
-/* Handles most game attributes */
-typedef struct s_game
+/* Структура для хранения состояния игры */
+typedef struct s_text_game
 {
-	int			fd;
-	char		**map;
-	int			height;
-	int			width;
-	int			mouse_x;
-	int			rate;
-	int			neg;
-	long		nframes;
-	void		*mlx_ptr;
-	void		*win_ptr;
-	t_img		win_img;
-	t_img		win_g;
-	t_img		win_r;
-	t_img		minimap;
-	t_img		miniview;
-	t_img		*scope;
-	t_tex		tex;
-	t_ray		ray;
-	t_player	pl;
-	float		x;
-	float		y;
-}				t_game;
+    int fd;             // Дескриптор файла карты
+    char **map;         // Двумерный массив карты
+    int height;        // Высота карты
+    int width;         // Ширина карты
+    int mouse_x;       // X-координата мыши
+    int rate;          // Частота обновления
+    int neg;           // Флаг инверсии цветов
+    long frame_count;      // Количество кадров
+    void *mlx_ptr;     // Указатель на MiniLibX
+    void *win_ptr;     // Указатель на окно
+    t_img win_img;     // Изображение окна
+
+    t_img minimap;     // Миникарта
+    t_img miniview;    // Мини-вид
+    t_img *scope;      // Целевой прицел
+    t_tex tex;         // Текстуры для игры
+    t_ray ray;         // Данные для лучей
+    t_player pl;       // Игрок
+    float x;           // Координата X (не используется в коде)
+    float y;           // Координата Y (не используется в коде)
+} t_text_game;
+
+
+
 
 /* Check possible map errors */
-void	check_map(t_game *g);
+void	check_map(t_text_game *g);
 
 /* Reads file with gnl */
-void	read_map(char *file, t_game *g);
+void	read_map(char *file, t_text_game *g);
 
 /* Retrieves next line from a given fd */
 char	*get_next_line(int fd);
 
 /* Prints appropriate error message and exits, freeing everything */
-int		cub_perror(t_cub_err err, t_game *g, char *param, int c);
+int		cub_perror(t_cub_err err, t_text_game *g, char *param, int c);
 
 /* Prints usage for the cub3D program */
 void	cub_usage(int errno);
@@ -161,34 +158,34 @@ int		cub_exit(void *param);
 int		cub_atoi(const char *nptr, long *nbr);
 
 /* Fills color int for floor and ceiling */
-void	get_cf_color(char **dir, t_game *g);
+void	get_cf_color(char **dir, t_text_game *g);
 
 /* Drecreases RGB value of color as object gets further */
 int		get_dist_color(int color, float ds, int tr);
 
 /* Frees all necessary things before exiting */
-void	cub_end(t_game *g);
+void	cub_end(t_text_game *g);
 
 /* Initializes game */
-void	game_init(t_game *g);
+void	game_init(t_text_game *g);
 
 /* Draws game */
-void	draw_game(t_game *g);
+// void	drawt_text_game(t_text_game *g);
 
 /* Initialize raycast data */
-void	init_ray(t_game *g);
+void	init_ray(t_text_game *g);
 
 /* Converts degrees to radians */
 float	degree_to_radians(float degree);
 
 /* Draws a 2D minimap */
-void	cub_minimap(t_game *g);
+void	cub_minimap(t_text_game *g);
 
 /* Draws a section of the 2D minimap */
-void	cub_miniview(t_game *g);
+void	cub_miniview(t_text_game *g);
 
 /* Function to shoot rays in a given direction to find walls */
-void	cub_raycast(t_game *g);
+void	cub_raycast(t_text_game *g);
 
 /* Function called inside mlx loop */
 int		cub_update(void *param);
@@ -197,24 +194,24 @@ int		cub_update(void *param);
 int		checkcn(char *m, char c, int n0, int n1);
 
 /* Check every element of the map: spaces + characters */
-void	check_elements(t_game *g);
+void	check_elements(t_text_game *g);
 
 /* Draws 3D view on window-sized image */
-void	cub_draw(t_game *g, int ray_count, float dis);
+void	cub_draw(t_text_game *g, int ray_count, float dis);
 
 /* Checks which wall has been hit to choose proper texture */
-t_img	*get_texture(t_game *g);
+t_img	*get_texture(t_text_game *g);
 
 /* Moves player depending on which key was pressed */
-void	move_pl(int k, t_game *g, float ray_cos, float ray_sin);
+void	move_pl(int k, t_text_game *g, float ray_cos, float ray_sin);
 
 /* Checks player surroundings to open/close doors */
-void	action_door(t_game *g);
+void	action_door(t_text_game *g);
 
 /* Inverts color of window-sized image */
-void	cub_invert_color(t_game *g);
+void	cub_invert_color(t_text_game *g);
 
 /* Adds spaces to end of all lines to ensure all lines have the same width */
-char	**square_map(t_game *g);
+char	**alight_map_rows(t_text_game *g);
 
 #endif

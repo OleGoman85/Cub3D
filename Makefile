@@ -461,7 +461,7 @@ SRC_GNL = get_next_line.c get_next_line_utils.c
 SRC = main.c map.c error.c color.c \
       minimap.c raycast.c render.c \
       utils.c game.c my_mlx.c \
-      parse_map.c textures.c \
+      map_checking.c textures.c \
       player.c end_linux.c
 
 # Все исходные файлы

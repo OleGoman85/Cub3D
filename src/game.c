@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   game.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbueno-g <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: ogoman <ogoman@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/02/03 17:51:15 by mbueno-g          #+#    #+#             */
-/*   Updated: 2022/02/21 16:51:59 by mbueno-g         ###   ########.fr       */
+/*   Created: 2024/07/30 07:36:24 by ogoman            #+#    #+#             */
+/*   Updated: 2024/08/08 10:51:07 by ogoman           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/cub3d.h"
 
-int	cub_keyup(int k, t_game *g)
+int	cub_keyup(int k, t_text_game *g)
 {
 	if (k == KEY_R)
 		g->neg *= -1;
@@ -33,10 +33,10 @@ int	cub_keyup(int k, t_game *g)
 	return (0);
 }
 
-int	cub_keydown(int k, t_game *g)
+int	cub_keydown(int k, t_text_game *g)
 {
 	if (k == KEY_Q || k == KEY_ESC)
-		cub_perror(end, g, NULL, 1);
+		cub_perror(ERR_END, g, NULL, 1);
 	else if (k == KEY_LEFT)
 		g->pl.keys.left_pressed = 1;
 	else if (k == KEY_RIGHT)
@@ -52,30 +52,20 @@ int	cub_keydown(int k, t_game *g)
 	return (0);
 }
 
-int	cub_mouse(int x, int y, t_game *g)
+int	cub_mouse(int x, int y, t_text_game *g)
 {
 	if (y != -1)
-		g->ray.angle += (x - g->mouse_x) / 3;
+		g->ray.current_angle += (x - g->mouse_x) / 3;
 	g->mouse_x = x;
 	return (0);
 }
 
-void	init_attr(t_game *g)
+void	init_attr(t_text_game *g)
 {
 	g->win_ptr = mlx_new_window(g->mlx_ptr, WIN_W, WIN_H, "Cub3D");
 	g->win_img.i = mlx_new_image(g->mlx_ptr, WIN_W, WIN_H);
 	g->win_img.addr = mlx_get_data_addr(g->win_img.i, &g->win_img.bpp, \
 		&g->win_img.line_len, &g->win_img.endian);
-	g->win_g.i = mlx_new_image(g->mlx_ptr, WIN_W, WIN_H);
-	g->win_g.addr = mlx_get_data_addr(g->win_g.i, &g->win_g.bpp, \
-		&g->win_g.line_len, &g->win_g.endian);
-	my_mlx_area_put(&g->win_g, ft_newvector(0, 0), \
-		ft_newvector(WIN_W, WIN_H), 0x0000FF00);
-	g->win_r.i = mlx_new_image(g->mlx_ptr, WIN_W, WIN_H);
-	g->win_r.addr = mlx_get_data_addr(g->win_r.i, &g->win_r.bpp, \
-		&g->win_r.line_len, &g->win_r.endian);
-	my_mlx_area_put(&g->win_r, ft_newvector(0, 0), \
-		ft_newvector(WIN_W, WIN_H), 0x00FF0000);
 	g->minimap.i = mlx_new_image(g->mlx_ptr, g->width * SIZE, \
 		g->height * SIZE);
 	g->minimap.addr = mlx_get_data_addr(g->minimap.i, &g->minimap.bpp, \
@@ -87,7 +77,7 @@ void	init_attr(t_game *g)
 	g->miniview.height = 15 * SIZE;
 }
 
-void	game_init(t_game *g)
+void	game_init(t_text_game *g)
 {
 	init_attr(g);
 	init_ray(g);

@@ -5,44 +5,41 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: ogoman <ogoman@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/02/03 18:07:58 by mbueno-g          #+#    #+#             */
-/*   Updated: 2024/07/10 12:05:55 by ogoman           ###   ########.fr       */
+/*   Created: 2024/07/16 09:56:23 by ogoman            #+#    #+#             */
+/*   Updated: 2024/08/08 10:51:42 by ogoman           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MY_MLX_H
 
-# define MY_MLX_H
+#define MY_MLX_H
 
-# include "../libft/libft.h"
+#include "../libft/libft.h"
 
 typedef struct s_img
 {
-	int		height;
-	int		width;
-	void	*i;
-	char	*addr;
-	int		bpp;
-	int		line_len;
-	int		endian;
-}				t_img;
+	int height;	  // Высота изображения
+	int width;	  // Ширина изображения
+	void *i;	  // Указатель на изображение (обычно для MiniLibX)
+	char *addr;	  // Указатель на адрес данных изображения (для доступа к пикселям)
+	int bpp;	  // Количество бит на пиксель (bits per pixel)
+	int line_len; // Длина строки изображения в байтах
+	int endian;	  // Порядок байтов (endianness) изображения
+} t_img;
 
 /* Sets color for a pixel at a position in an image */
-void			my_mlx_pixel_put(t_img *data, int x, int y, int color);
+void put_pixel(t_img *img, int x, int y, int color);
 
 /* Retrieves color as int at given position from an image */
-unsigned int	my_mlx_pixel_get(t_img *data, int x, int y);
+unsigned int get_pixel_color(t_img *img, int x, int y);
 
 /* Draws a section of a screen in a certain color */
-void			my_mlx_area_put(t_img *d, t_vector p, t_vector dim, int c);
+void draw_rectcurrent_angle(t_img *img, t_vector position, t_vector dimensions, int color);
 
 /* Loads XPM image and fills t_img struct for it */
-t_img			*mlx_load_img(void *ptr, char *path);
+t_img *load_img(void *ptr, char *path);
 
 /* Writes first img to second image to given pos, ignoring "c1" pixels */
-void			mlx_img_to_img(int p[2], t_img img[2], int c1);
-
-/* Draws a vertical line: width = i, height = [j[0],j[1]) */
-void			mlx_draw_vline(t_img img, int i, int j[2], int color);
+void mlx_img_to_img(int p[2], t_img img[2], int c1);
 
 #endif

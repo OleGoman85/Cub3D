@@ -6,7 +6,7 @@
 /*   By: ogoman <ogoman@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/11 06:04:06 by ogoman            #+#    #+#             */
-/*   Updated: 2024/07/11 06:04:13 by ogoman           ###   ########.fr       */
+/*   Updated: 2024/07/16 09:49:54 by ogoman           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,7 @@ t_list	*ft_lstnew(void *content)
 
 	node = (t_list *)malloc(sizeof(t_list));
 	if (!node)
-	{
 		return (NULL);
-	}
 	node->content = content;
 	node->next = NULL;
 	return (node);

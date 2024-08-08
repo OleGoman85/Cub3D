@@ -3,41 +3,42 @@
 /*                                                        :::      ::::::::   */
 /*   minimap.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aperez-b <aperez-b@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ogoman <ogoman@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/02/08 09:24:15 by aperez-b          #+#    #+#             */
-/*   Updated: 2022/02/21 16:18:27 by mbueno-g         ###   ########.fr       */
+/*   Created: 2024/07/16 10:14:50 by ogoman            #+#    #+#             */
+/*   Updated: 2024/08/08 08:54:42 by ogoman           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+
 #include "../inc/cub3d.h"
 
-void	cub_miniview(t_game *g)
+void	cub_miniview(t_text_game *g)
 {
 	int	xy[2];
-	int	aux[2];
+	int	updated_map[2];
 
-	aux[1] = -1;
-	xy[1] = (g->pl.y + 0.5) * SIZE - (int)(g->miniview.height / 2);
-	while (++aux[1] < (g->miniview.height))
+	updated_map[1] = -1;
+	xy[1] = (g->pl.position_y + 0.5) * SIZE - (int)(g->miniview.height / 2);
+	while (++updated_map[1] < (g->miniview.height))
 	{
-		aux[0] = -1;
-		xy[0] = (g->pl.x + 0.5) * SIZE - (int)(g->miniview.width / 2);
-		while (++aux[0] < g->miniview.width)
+		updated_map[0] = -1;
+		xy[0] = (g->pl.position_x + 0.5) * SIZE - (int)(g->miniview.width / 2);
+		while (++updated_map[0] < g->miniview.width)
 		{
 			if (xy[1] >= 0 && xy[1] < (g->height * SIZE) && xy[0] >= 0 \
 						&& xy[0] < (g->width * SIZE))
-				my_mlx_pixel_put(&g->miniview, aux[0], aux[1], \
-					my_mlx_pixel_get(&g->minimap, xy[0], xy[1]));
+				put_pixel(&g->miniview, updated_map[0], updated_map[1], \
+					get_pixel_color(&g->minimap, xy[0], xy[1]));
 			else
-				my_mlx_pixel_put(&g->miniview, aux[0], aux[1], 0xFF000000);
+				put_pixel(&g->miniview, updated_map[0], updated_map[1], 0xFF000000);
 			xy[0]++;
 		}
 		xy[1]++;
 	}
 }
 
-int	get_mini_color(t_game *g, int len, int xy[2])
+int	get_mini_color(t_text_game *g, int len, int xy[2])
 {
 	int	color;
 
@@ -55,7 +56,7 @@ int	get_mini_color(t_game *g, int len, int xy[2])
 	return (color);
 }
 
-void	cub_minimap(t_game *g)
+void	cub_minimap(t_text_game *g)
 {
 	int	xy[2];
 	int	len;
@@ -66,7 +67,7 @@ void	cub_minimap(t_game *g)
 		xy[0] = -1;
 		len = ft_strlen(g->map[xy[1]]);
 		while (++xy[0] < g->width)
-			my_mlx_area_put(&g->minimap, \
+			draw_rectcurrent_angle(&g->minimap, \
 				ft_newvector(xy[0] * SIZE, xy[1] * SIZE), \
 				ft_newvector(SIZE, SIZE), get_mini_color(g, len, xy));
 	}

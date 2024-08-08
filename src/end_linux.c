@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   end_linux.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aperez-b <aperez-b@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ogoman <ogoman@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/02/01 11:06:18 by aperez-b          #+#    #+#             */
-/*   Updated: 2022/02/28 19:31:35 by aperez-b         ###   ########.fr       */
+/*   Created: 2024/07/30 07:35:56 by ogoman            #+#    #+#             */
+/*   Updated: 2024/08/08 09:51:27 by ogoman           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/cub3d.h"
 
-void	free_animation(t_game *g, t_list *start)
+void	free_animation(t_text_game *g, t_list *start)
 {
 	t_list	*temp;
 
@@ -28,20 +28,24 @@ void	free_animation(t_game *g, t_list *start)
 	}
 }
 
-void	destroy_images(t_game *g)
+void	destroy_images(t_text_game *g)
 {
-	free_animation(g, g->tex.n_bak);
-	free_animation(g, g->tex.s_bak);
-	free_animation(g, g->tex.e_bak);
-	free_animation(g, g->tex.w_bak);
+	free_animation(g, g->tex.n);
+	// free_animation(g, g->tex.n_bak);
+	free_animation(g, g->tex.s);
+	// free_animation(g, g->tex.s_bak);
+	free_animation(g, g->tex.e);
+	// free_animation(g, g->tex.e_bak);
+	free_animation(g, g->tex.w);
+	// free_animation(g, g->tex.w_bak);
 	if (g->tex.b && g->tex.b->i)
 		mlx_destroy_image(g->mlx_ptr, g->tex.b->i);
 	if (g->win_img.i)
 		mlx_destroy_image(g->mlx_ptr, g->win_img.i);
-	if (g->win_g.i)
-		mlx_destroy_image(g->mlx_ptr, g->win_g.i);
-	if (g->win_r.i)
-		mlx_destroy_image(g->mlx_ptr, g->win_r.i);
+	// if (g->win_g.i)
+	// 	mlx_destroy_image(g->mlx_ptr, g->win_g.i);
+	// if (g->win_r.i)
+	// 	mlx_destroy_image(g->mlx_ptr, g->win_r.i);
 	if (g->scope && g->scope->i)
 		mlx_destroy_image(g->mlx_ptr, g->scope->i);
 	if (g->win_ptr)
@@ -54,7 +58,7 @@ void	destroy_images(t_game *g)
 	free(g->scope);
 }
 
-void	cub_end(t_game *g)
+void	cub_end(t_text_game *g)
 {
 	if (!g)
 		return ;

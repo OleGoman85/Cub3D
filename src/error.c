@@ -5,35 +5,35 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: ogoman <ogoman@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/01/31 13:10:05 by aperez-b          #+#    #+#             */
-/*   Updated: 2024/07/15 10:38:27 by ogoman           ###   ########.fr       */
+/*   Created: 2024/07/30 07:36:15 by ogoman            #+#    #+#             */
+/*   Updated: 2024/08/07 12:32:40 by ogoman           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/cub3d.h"
 
-int	cub_perror(t_cub_err err, t_game *g, char *param, int c)
+int	cub_perror(t_cub_err err, t_text_game *g, char *param, int c)
 {
 	if (!c)
 		return (0);
 	cub_end(g);
-	write(2, "cub3d: ", 7 * (err != end)); //  умножение на 0 или 1 позволяет контролировать вывод 
-	write(2, "invalid number of arguments\n", 28 * (err == inv_argc));
-	write(2, "cub3D not run in root of the project\n", 37 * (err == inv_pwd));
-	write(2, "file must be of .cub type\n", 26 * (err == inv_ext));
-	write(2, "error opening file: ", 20 * (err == inv_file));
-	write(2, "file is empty\n", 14 * (err == empty_file));
-	write(2, "devide out of memory\n", 21 * (err == no_memory));
-	write(2, "invalid color\n", 15 * (err == inv_color));
-	write(2, "map not surrounded by walls\n", 28 * (err == inv_wall));
-	write(2, "invalid map\n", 12 * (err == inv_map));
-	write(2, "invalid character\n", 18 * (err == inv_charac));
-	write(2, "invalid texture file\n", 21 * (err == inv_tex));
-	write(2, "invalid number of players\n", 26 * (err == inv_player));
+	write(2, "cub3d: ", 7 * (err != ERR_END)); //  умножение на 0 или 1 позволяет контролировать вывод 
+	write(2, "invalid number of arguments\n", 28 * (err == ERR_INV_AC));
+	write(2, "cub3D not run in root of the project\n", 37 * (err == ERR_INV_PATH));
+	write(2, "file must be of .cub type\n", 26 * (err == ERR_INV_EXT));
+	write(2, "error opening file: ", 20 * (err == ERR_INV_FILE));
+	write(2, "file is empty\n", 14 * (err == ERR_EMPTY_FILE));
+	write(2, "devide out of memory\n", 21 * (err == ERR_OUT_OF_MEMORY));
+	write(2, "invalid color\n", 15 * (err == ERR_INV_COLOR));
+	write(2, "map not surrounded by walls\n", 28 * (err == ERR_INV_WALL));
+	write(2, "invalid map\n", 12 * (err == ERR_INV_MAP));
+	write(2, "invalid character\n", 18 * (err == ERR_INV_CHARAC));
+	write(2, "invalid texture file\n", 21 * (err == ERR_INV_TEX));
+	write(2, "invalid number of players\n", 26 * (err == ERR_INV_PLAYER));
 	ft_putendl_fd(param, 2);
-	if (err == inv_argc && ft_putchar_fd('\n', 2))
+	if (err == ERR_INV_AC && ft_putchar_fd('\n', 2))
 		cub_usage(1);
-	if (err == end)
+	if (err == ERR_END)
 		exit(0);
 	exit(1);
 	return (1);
@@ -48,6 +48,6 @@ void	cub_usage(int errno)
 
 int	cub_exit(void *param)
 {
-	cub_perror(end, param, NULL, 1);
+	cub_perror(ERR_END, param, NULL, 1);
 	return (0);
 }

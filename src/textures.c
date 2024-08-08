@@ -3,16 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   textures.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aperez-b <aperez-b@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ogoman <ogoman@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/02/17 09:25:29 by aperez-b          #+#    #+#             */
-/*   Updated: 2022/03/02 22:06:03 by aperez-b         ###   ########.fr       */
+/*   Created: 2024/07/16 10:19:04 by ogoman            #+#    #+#             */
+/*   Updated: 2024/08/07 07:37:28 by ogoman           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+
 #include "../inc/cub3d.h"
 
-t_img	*get_texture(t_game *g)
+t_img	*get_texture(t_text_game *g)
 {
 	t_img	*i;
 	float	ray_cos;
@@ -36,20 +37,20 @@ t_img	*get_texture(t_game *g)
 	return (i);
 }
 
-int	get_tex_color(t_game *g, t_img *i, int z)
+int	get_tex_color(t_text_game *g, t_img *i, int z)
 {
 	int	color;
 
 	color = 0x00000000;
 	if (g->map[(int)g->y][(int)g->x] == '1')
-		color = my_mlx_pixel_get(i, (int)(i->width * (g->x + g->y)) \
+		color = get_pixel_color(i, (int)(i->width * (g->x + g->y)) \
 			% i->width, z);
 	else if (g->map[(int)g->y][(int)g->x] == 'c')
 		color = 0x00FF0000;
 	return (color);
 }
 
-void	draw_texture(t_game *g, t_img *i, int ray_count, int wall_height)
+void	draw_texture(t_text_game *g, t_img *i, int ray_count, int wall_height)
 {
 	float	dy;
 	float	ds;
@@ -69,14 +70,14 @@ void	draw_texture(t_game *g, t_img *i, int ray_count, int wall_height)
 		while (cy[0] < cy[1] + dy)
 		{
 			if (cy[0] >= 0 && cy[0] < (float)WIN_H)
-				my_mlx_pixel_put(&g->win_img, ray_count, cy[0], color);
+				put_pixel(&g->win_img, ray_count, cy[0], color);
 			cy[0]++;
 		}
 		cy[1] += dy;
 	}
 }
 
-void	cub_draw(t_game *g, int ray_count, float dis)
+void	cub_draw(t_text_game *g, int ray_count, float dis)
 {
 	int		wall_height;
 	float	ds;
@@ -88,10 +89,10 @@ void	cub_draw(t_game *g, int ray_count, float dis)
 	while (++j < WIN_H)
 	{
 		if (j < ds)
-			my_mlx_pixel_put(&g->win_img, ray_count, j, \
+			put_pixel(&g->win_img, ray_count, j, \
 				get_dist_color(g->tex.ceiling, j, 0));
 		else if (j >= (WIN_H / 2) + wall_height)
-			my_mlx_pixel_put(&g->win_img, ray_count, j, \
+			put_pixel(&g->win_img, ray_count, j, \
 				get_dist_color(g->tex.floor, WIN_H - j, 0));
 	}
 	draw_texture(g, get_texture(g), ray_count, wall_height);

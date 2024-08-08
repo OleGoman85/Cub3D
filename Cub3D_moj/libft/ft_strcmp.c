@@ -6,7 +6,7 @@
 /*   By: ogoman <ogoman@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/12 09:10:03 by ogoman            #+#    #+#             */
-/*   Updated: 2024/05/02 15:02:34 by ogoman           ###   ########.fr       */
+/*   Updated: 2024/08/08 10:24:41 by ogoman           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,4 +21,3 @@ int	ft_strcmp(const char *s1, const char *s2)
 	}
 	return ((unsigned char)(*s1) - (unsigned char)(*s2));
 }
-

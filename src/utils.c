@@ -3,32 +3,32 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbueno-g <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: ogoman <ogoman@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/01/31 17:00:10 by mbueno-g          #+#    #+#             */
-/*   Updated: 2022/02/19 13:58:36 by aperez-b         ###   ########.fr       */
+/*   Created: 2024/07/30 07:38:49 by ogoman            #+#    #+#             */
+/*   Updated: 2024/08/07 07:35:44 by ogoman           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/cub3d.h"
 
-t_img	*mlx_load_img(void *ptr, char *path)
-{
-	int		fd;
-	t_img	*i;
+// t_img	*load_img(void *ptr, char *path)
+// {
+// 	int		fd;
+// 	t_img	*i;
 
-	i = malloc(sizeof(t_img));
-	i->i = NULL;
-	if (!path || ft_strrncmp(path, ".xpm", 4))
-		return (i);
-	fd = open(path, O_RDONLY);
-	if (fd < 0)
-		return (i);
-	close(fd);
-	i->i = mlx_xpm_file_to_image(ptr, path, &i->width, &i->height);
-	i->addr = mlx_get_data_addr(i->i, &i->bpp, &i->line_len, &i->endian);
-	return (i);
-}
+// 	i = malloc(sizeof(t_img));
+// 	i->i = NULL;
+// 	if (!path || ft_strrncmp(path, ".xpm", 4))
+// 		return (i);
+// 	fd = open(path, O_RDONLY);
+// 	if (fd < 0)
+// 		return (i);
+// 	close(fd);
+// 	i->i = mlx_xpm_file_to_image(ptr, path, &i->width, &i->height);
+// 	i->addr = mlx_get_data_addr(i->i, &i->bpp, &i->line_len, &i->endian);
+// 	return (i);
+// }
 
 int	cub_atoi(const char *nptr, long *nbr)
 {

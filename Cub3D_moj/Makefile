@@ -19,11 +19,8 @@ BRed=\033[1;31m
 
 # Исходные файлы
 SRC_GNL = get_next_line.c get_next_line_utils.c
-SRC = main.c map.c error.c color.c \
-      minimap.c raycast.c render.c \
-      utils.c game.c my_mlx.c \
-      parse_map.c textures.c \
-      player.c end_linux.c
+SRC = main.c map.c errors.c game_mlx.c map_checking.c \
+color.c game_init.c utils.c
 
 # Все исходные файлы
 ALL_SRC = $(addprefix $(SRC_DIR)/, $(SRC)) $(addprefix $(GNL_DIR)/, $(SRC_GNL))
