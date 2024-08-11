@@ -6,7 +6,7 @@
 /*   By: ogoman <ogoman@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 11:47:08 by ogoman            #+#    #+#             */
-/*   Updated: 2024/08/08 11:45:32 by ogoman           ###   ########.fr       */
+/*   Updated: 2024/08/11 11:56:22 by ogoman           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,12 +32,12 @@ static void check_file(int ac, char **av)
 {
 	int fd;
 
-	cub_perror(ERR_INV_AC, NULL, NULL, ac != 2); // esli ne ravno 2 vizivaetsja cub_perror
+	handle_error(ERR_INV_AC, NULL, NULL, ac != 2); // esli ne ravno 2 vizivaetsja handle_error
 	fd = open(av[1], O_RDONLY);
 	close(fd);
-	cub_perror(ERR_INV_FILE, NULL, av[1], fd < 0);
+	handle_error(ERR_INV_FILE, NULL, av[1], fd < 0);
 	if (ft_strrncmp(".cub", av[1], 4))
-		cub_perror(ERR_INV_EXT, NULL, NULL, 1);
+		handle_error(ERR_INV_EXT, NULL, NULL, 1);
 }
 
 /**
@@ -61,15 +61,13 @@ void init_sprites(t_text_game *g)
     g->tex.e = NULL;        // Указатель на текстуру востока
     g->tex.w = NULL;        // Указатель на текстуру запада
 
-    // Загрузка текстур из файлов.
     // Функция load_img загружает изображения из файлов и возвращает указатели на них.
     g->tex.b = load_img(g->mlx_ptr, "textures/black.xpm"); // Загрузка текстуры черного цвета
     g->scope = load_img(g->mlx_ptr, "textures/scope.xpm"); // Загрузка текстуры прицела
 
     // Проверка успешности загрузки текстур.
-    // Если какая-либо текстура не загрузилась (указатель NULL), выводится ошибка и программа завершается.
     if (!g->tex.b || !g->tex.b->i || !g->scope || !g->scope->i)
-        cub_perror(ERR_INV_PATH, g, NULL, 1); // Обработка ошибки загрузки текстур
+        handle_error(ERR_INV_PATH, g, NULL, 1); // Обработка ошибки загрузки текстур
 }
 
 /**
@@ -88,7 +86,7 @@ static t_text_game cub_init(void)
 	g.width = 0;						 // Ширина окна, инициализируется нулём
 	g.height = 0;						 // Высота окна, инициализируется нулём
 	g.fd = -1;							 // Дескриптор файла, -1 означает, что файл ещё не открыт
-	g.frame_count = 0;						 // Счетчик кадров, инициализируется нулём
+	g.frame_count = 0;					 // Счетчик кадров, инициализируется нулём
 	g.pl.dir = 0;						 // Направление игрока, инициализируется нулём
 	g.map = NULL;						 // Указатель на карту, инициализируется NULL (пусто)
 	g.mlx_ptr = NULL;					 // Указатель на MLX (MiniLibX), инициализируется NULL
@@ -96,13 +94,11 @@ static t_text_game cub_init(void)
 	g.mlx_ptr = mlx_init();				 // Инициализация MLX
 	g.tex.floor = -1;					 // Цвет пола, -1 указывает на неинициализированное значение
 	g.tex.ceiling = -1;					 // Цвет потолка, -1 указывает на неинициализированное значение
-	g.pl.position_x = -1;						 // Позиция игрока по X, -1 означает, что позиция не задана
-	g.pl.position_y = -1;						 // Позиция игрока по Y, -1 означает, что позиция не задана
-	g.pl.speed = 0.10;					 // Скорость игрока, инициализирована значением 0.12
+	g.pl.position_x = -1;				 // Позиция игрока по X, -1 означает, что позиция не задана
+	g.pl.position_y = -1;				 // Позиция игрока по Y, -1 означает, что позиция не задана
+	g.pl.speed = 0.10;					 // Скорость игрока, инициализирована значением 0.10
 	g.pl.door_cooldown = 0;				 // Охлаждение двери, инициализируется нулём
-	g.mouse_x = 0;						 // Положение мыши по X, инициализируется нулём
-	g.neg = -1;							 // Некий флаг, инициализируется -1 (возможно, указывает на состояние)
-	g.rate = 10;						 // Частота кадров или обновления, инициализируется значением 30
+	g.rate = 30;						 // Частота кадров или обновления, инициализируется значением 30
 	init_sprites(&g);					 // Инициализация спрайтов
 	ft_bzero(&g.pl.keys, sizeof(t_key)); // Обнуление структуры клавиш игрока
 	return (g); // Возвращает инициализированную структуру игры
@@ -171,7 +167,7 @@ static void init_game(t_text_game *g, char *filename)
  */
 static void validate_textures(t_text_game *g)
 {
-    cub_perror(ERR_INV_TEX, g, NULL, !g->tex.n || !g->tex.s || !g->tex.e || !g->tex.w);
+    handle_error(ERR_INV_TEX, g, NULL, !g->tex.n || !g->tex.s || !g->tex.e || !g->tex.w);
 }
 
 /**
@@ -184,5 +180,5 @@ static void validate_textures(t_text_game *g)
  */
 static void validate_colors(t_text_game *g)
 {
-    cub_perror(ERR_INV_COLOR, g, NULL, g->tex.floor == -1 || g->tex.ceiling == -1);
+    handle_error(ERR_INV_COLOR, g, NULL, g->tex.floor == -1 || g->tex.ceiling == -1);
 }

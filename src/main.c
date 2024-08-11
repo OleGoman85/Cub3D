@@ -6,7 +6,7 @@
 /*   By: ogoman <ogoman@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 09:42:14 by ogoman            #+#    #+#             */
-/*   Updated: 2024/08/08 10:50:27 by ogoman           ###   ########.fr       */
+/*   Updated: 2024/08/11 09:13:35 by ogoman           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,12 +32,12 @@ static void check_file(int ac, char **av)
 {
 	int fd;
 
-	cub_perror(ERR_INV_AC, NULL, NULL, ac != 2); // esli ne ravno 2 vizivaetsja cub_perror
+	handle_error(ERR_INV_AC, NULL, NULL, ac != 2); // esli ne ravno 2 vizivaetsja handle_error
 	fd = open(av[1], O_RDONLY);
 	close(fd);
-	cub_perror(ERR_INV_FILE, NULL, av[1], fd < 0);
+	handle_error(ERR_INV_FILE, NULL, av[1], fd < 0);
 	if (ft_strrncmp(".cub", av[1], 4))
-		cub_perror(ERR_INV_EXT, NULL, NULL, 1);
+		handle_error(ERR_INV_EXT, NULL, NULL, 1);
 }
 
 /**
@@ -69,7 +69,7 @@ void init_sprites(t_text_game *g)
     // Проверка успешности загрузки текстур.
     // Если какая-либо текстура не загрузилась (указатель NULL), выводится ошибка и программа завершается.
     if (!g->tex.b || !g->tex.b->i || !g->scope || !g->scope->i)
-        cub_perror(ERR_INV_PATH, g, NULL, 1); // Обработка ошибки загрузки текстур
+        handle_error(ERR_INV_PATH, g, NULL, 1); // Обработка ошибки загрузки текстур
 }
 
 /**
@@ -171,7 +171,7 @@ static void init_game(t_text_game *g, char *filename)
  */
 static void validate_textures(t_text_game *g)
 {
-    cub_perror(ERR_INV_TEX, g, NULL, !g->tex.n || !g->tex.s || !g->tex.e || !g->tex.w);
+    handle_error(ERR_INV_TEX, g, NULL, !g->tex.n || !g->tex.s || !g->tex.e || !g->tex.w);
 }
 
 /**
@@ -184,5 +184,5 @@ static void validate_textures(t_text_game *g)
  */
 static void validate_colors(t_text_game *g)
 {
-    cub_perror(ERR_INV_COLOR, g, NULL, g->tex.floor == -1 || g->tex.ceiling == -1);
+    handle_error(ERR_INV_COLOR, g, NULL, g->tex.floor == -1 || g->tex.ceiling == -1);
 }

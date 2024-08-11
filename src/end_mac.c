@@ -54,7 +54,7 @@
 // 	free(g->scope);
 // }
 
-// void	cub_end(t_text_game *g)
+// void	cleanup_game(t_text_game *g)
 // {
 // 	if (!g)
 // 		return ;

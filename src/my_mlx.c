@@ -6,7 +6,7 @@
 /*   By: ogoman <ogoman@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 10:16:12 by ogoman            #+#    #+#             */
-/*   Updated: 2024/08/08 08:54:42 by ogoman           ###   ########.fr       */
+/*   Updated: 2024/08/11 11:55:13 by ogoman           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,6 +141,5 @@ t_img *load_img(void *mlx_ptr, char *file_path)
         free(image);
         return NULL;
     }
-
     return image;
 }

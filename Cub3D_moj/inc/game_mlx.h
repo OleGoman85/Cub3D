@@ -6,15 +6,13 @@
 /*   By: ogoman <ogoman@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 09:56:23 by ogoman            #+#    #+#             */
-/*   Updated: 2024/08/08 11:00:03 by ogoman           ###   ########.fr       */
+/*   Updated: 2024/08/11 12:15:29 by ogoman           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MY_MLX_H
-
-#define MY_MLX_H
-
-#include "../libft/libft.h"
+# define MY_MLX_H
+# include "cub3D.h"
 
 typedef struct s_img
 {
@@ -27,19 +25,28 @@ typedef struct s_img
 	int endian;	  // Порядок байтов (endianness) изображения
 } t_img;
 
-/* Sets color for a pixel at a position in an image */
+/*Sets the color of a specific pixel at the given coordinates in the image*/
 void put_pixel(t_img *img, int x, int y, int color);
 
-/* Retrieves color as int at given position from an image */
+/*Retrieves the color of a specific pixel at the given coordinates in the image.*/
 unsigned int get_pixel_color(t_img *img, int x, int y);
 
-/* Draws a section of a screen in a certain color */
-void draw_rectangle(t_img *img, t_vector position, t_vector dimensions, int color);
+/* Draws a filled rectangle with a specified color onto an image.*/
+void draw_rectcurrent_angle(t_img *img, t_vector position, t_vector dimensions, int color);
 
-/* Loads XPM image and fills t_img struct for it */
-t_img *load_img(void *ptr, char *path);
-
-/* Writes first img to second image to given pos, ignoring "c1" pixels */
+/*Copies pixels from one image to another, skipping a specified color.*/
 void mlx_img_to_img(int p[2], t_img img[2], int c1);
+
+/*Checks if the provided file path is valid for an image.*/
+static int is_valid_image_path(const char *file_path);
+
+/*Allocates memory for a t_img structure and initializes it.*/
+static t_img *create_image_structure(void);
+
+/*Loads an image from a file and initializes the given t_img structure.*/
+static int load_image_from_file(void *mlx_ptr, char *file_path, t_img *image);
+
+/*Loads an image from a file and creates a t_img structure for it.*/
+t_img *load_img(void *mlx_ptr, char *file_path);
 
 #endif
