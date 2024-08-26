@@ -6,7 +6,7 @@
 /*   By: ogoman <ogoman@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/30 07:38:49 by ogoman            #+#    #+#             */
-/*   Updated: 2024/08/07 07:35:44 by ogoman           ###   ########.fr       */
+/*   Updated: 2024/08/11 12:34:52 by ogoman           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,15 +30,15 @@
 // 	return (i);
 // }
 
-int	cub_atoi(const char *nptr, long *nbr)
+int	parse_color_value(const char *nptr, long *value)
 {
-	*nbr = 0;
+	*value = 0;
 	if (!nptr || !ft_isdigit(*nptr))
 		return (-1);
 	while (ft_isdigit(*nptr))
 	{
-		*nbr = 10 * (*nbr) + (*nptr - '0');
-		if (*nbr < 0 || *nbr > 255)
+		*value = 10 * (*value) + (*nptr - '0');
+		if (*value < 0 || *value > 255)
 			return (-1);
 		nptr++;
 	}

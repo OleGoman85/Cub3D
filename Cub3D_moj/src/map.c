@@ -6,7 +6,7 @@
 /*   By: ogoman <ogoman@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/30 11:34:27 by ogoman            #+#    #+#             */
-/*   Updated: 2024/08/08 11:08:31 by ogoman           ###   ########.fr       */
+/*   Updated: 2024/08/11 12:22:44 by ogoman           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,27 +30,19 @@ t_list *get_anim(t_img *img, t_list **anim, int (*n)[2])
 {
     // Если указатели действительны и изображение не NULL
     if (n && anim && *anim && img)
-    {
-        // Уменьшаем счетчик
         (*n)[0]--;
-    }
-
-    // Если изображение NULL, просто возвращаем текущий список анимаций
+    // Если изображение NULL, возврат текущего списка анимаций
     if (!img)
-    {
         return *anim;
-    }
-
     // Если изображение не инициализировано
     if (!img->i)
     {
         free(img);
-        // Устанавливаем флаг, что изображений больше нет
+        // флаг, что изображений больше нет
         (*n)[1] = 0;
         return *anim;
     }
-
-    // Добавляем изображение в список анимаций
+    // изображение в список анимаций
     ft_lstadd_back(anim, ft_lstnew(img));
     return *anim;
 }
@@ -75,19 +67,15 @@ void	check_textures(char *trim, t_text_game *g, int (*n)[2])
 	if (!dir)
 	{
 		free(trim);
-		cub_perror(ERR_OUT_OF_MEMORY, g, NULL, 1);
+		handle_error(ERR_OUT_OF_MEMORY, g, NULL, 1);
 	}
 	if (!ft_strncmp(dir[0], "NO", 3))
         g->tex.n = get_anim(load_img(g->mlx_ptr, dir[1]), &g->tex.n, n);
-		// g->tex.n_bak = get_anim(load_img(g->mlx_ptr, dir[1]), &g->tex.n, n);
 	else if (!ft_strncmp(dir[0], "SO", 3))
 		g->tex.s = get_anim(load_img(g->mlx_ptr, dir[1]), &g->tex.s, n);
-        // g->tex.s_bak = get_anim(load_img(g->mlx_ptr, dir[1]), &g->tex.s, n);
 	else if (!ft_strncmp(dir[0], "EA", 3))
 		g->tex.e = get_anim(load_img(g->mlx_ptr, dir[1]), &g->tex.e, n);
-        // g->tex.e_bak = get_anim(load_img(g->mlx_ptr, dir[1]), &g->tex.e, n);
 	else if (!ft_strncmp(dir[0], "WE", 3))
-		// g->tex.w_bak = get_anim(load_img(g->mlx_ptr, dir[1]), &g->tex.w, n);
         g->tex.w = get_anim(load_img(g->mlx_ptr, dir[1]), &g->tex.w, n);
 	else if ((!ft_strncmp(dir[0], "F", 2) && g->tex.floor == -1)
             || (!ft_strncmp(dir[0], "C", 2) && g->tex.ceiling == -1))
@@ -95,7 +83,7 @@ void	check_textures(char *trim, t_text_game *g, int (*n)[2])
 	else
 	{
 		ft_free_matrix(&dir);
-		cub_perror(ERR_INV_MAP, g, NULL, 1);
+		handle_error(ERR_INV_MAP, g, NULL, 1);
 	}
 	ft_free_matrix(&dir);
 }
@@ -119,7 +107,7 @@ void	read_map(char *file, t_text_game *g)
 	n[0] = -1; //  для подсчета строк карты
 	n[1] = -1; // для отслеживания текстур
 	g->fd = open(file, O_RDONLY);
-	cub_perror(ERR_INV_FILE, g, file, g->fd < 0);
+	handle_error(ERR_INV_FILE, g, file, g->fd < 0);
 	while (1)
 	{
 		line[0] = get_next_line(g->fd);
@@ -135,8 +123,8 @@ void	read_map(char *file, t_text_game *g)
 			g->width = ft_strlen(line[1]);
 		free(line[1]);
 	}
-	cub_perror(ERR_EMPTY_FILE, g, NULL, !n[0]); //если не было прочитано ни одной строки карты
-	cub_perror(ERR_INV_TEX, g, NULL, !n[1]); // не было найдено ни одной текстуры
+	handle_error(ERR_EMPTY_FILE, g, NULL, !n[0]); //если не было прочитано ни одной строки карты
+	handle_error(ERR_INV_TEX, g, NULL, !n[1]); // не было найдено ни одной текстуры
 	g->height = ft_matrixlen(g->map); // Высота карты
 }
 
@@ -161,7 +149,7 @@ static void validate_walls(t_text_game *g, int row, int col_start, int col_end)
             g->map[row][col_start] != '1' || 
             g->map[row][col_end] != '1')
         {
-            cub_perror(ERR_INV_WALL, g, NULL, 1);
+            handle_error(ERR_INV_WALL, g, NULL, 1);
         }
     }
     else
@@ -170,7 +158,7 @@ static void validate_walls(t_text_game *g, int row, int col_start, int col_end)
             (g->map[row][col_start] != '1' || 
              g->map[row][col_end] != '1'))
         {
-            cub_perror(ERR_INV_WALL, g, NULL, 1);
+            handle_error(ERR_INV_WALL, g, NULL, 1);
         }
     }
 }
@@ -194,7 +182,7 @@ void check_map(t_text_game *g)
 
         // Проверка на пустую строку
         if (col_start > col_end)
-            cub_perror(ERR_INV_MAP, g, NULL, 1);
+            handle_error(ERR_INV_MAP, g, NULL, 1);
 
         validate_walls(g, row, col_start, col_end);
 
@@ -205,6 +193,6 @@ void check_map(t_text_game *g)
     check_elements(g);
 
     // Проверка на количество строк
-    cub_perror(ERR_INV_MAP, g, NULL, g->height == 0);
+    handle_error(ERR_INV_MAP, g, NULL, g->height == 0);
 }
 

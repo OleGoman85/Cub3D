@@ -6,7 +6,7 @@
 /*   By: ogoman <ogoman@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 10:16:02 by ogoman            #+#    #+#             */
-/*   Updated: 2024/08/08 08:51:45 by ogoman           ###   ########.fr       */
+/*   Updated: 2024/08/11 09:13:35 by ogoman           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,24 +18,24 @@
 // 	if (j - 1 >= 0 && j - 1 < g->height)
 // 	{
 // 		if (i - 1 >= 0 && i - 1 < (int)ft_strlen(map[j - 1]))
-// 			cub_perror(ERR_INV_WALL, g, NULL, map[j - 1][i - 1] == '0');
+// 			handle_error(ERR_INV_WALL, g, NULL, map[j - 1][i - 1] == '0');
 // 		if (i + 1 >= 0 && i + 1 < (int)ft_strlen(map[j - 1]))
-// 			cub_perror(ERR_INV_WALL, g, NULL, map[j - 1][i + 1] == '0');
+// 			handle_error(ERR_INV_WALL, g, NULL, map[j - 1][i + 1] == '0');
 // 		if (i >= 0 && i < (int)ft_strlen(map[j - 1]))
-// 			cub_perror(ERR_INV_WALL, g, NULL, map[j - 1][i] == '0');
+// 			handle_error(ERR_INV_WALL, g, NULL, map[j - 1][i] == '0');
 // 	}
 // 	if (i - 1 >= 0 && i - 1 < (int)ft_strlen(map[j]))
-// 		cub_perror(ERR_INV_WALL, g, NULL, map[j][i - 1] == '0');
+// 		handle_error(ERR_INV_WALL, g, NULL, map[j][i - 1] == '0');
 // 	if (i + 1 >= 0 && i + 1 < (int)ft_strlen(map[j]))
-// 		cub_perror(ERR_INV_WALL, g, NULL, map[j][i + 1] == '0');
+// 		handle_error(ERR_INV_WALL, g, NULL, map[j][i + 1] == '0');
 // 	if (j + 1 >= 0 && j + 1 < g->height)
 // 	{
 // 		if (i - 1 >= 0 && i - 1 < (int)ft_strlen(map[j + 1]))
-// 			cub_perror(ERR_INV_WALL, g, NULL, map[j + 1][i - 1] == '0');
+// 			handle_error(ERR_INV_WALL, g, NULL, map[j + 1][i - 1] == '0');
 // 		if (i + 1 >= 0 && i + 1 < (int)ft_strlen(map[j + 1]))
-// 			cub_perror(ERR_INV_WALL, g, NULL, map[j + 1][i + 1] == '0');
+// 			handle_error(ERR_INV_WALL, g, NULL, map[j + 1][i + 1] == '0');
 // 		if (i >= 0 && i < (int)ft_strlen(map[j + 1]))
-// 			cub_perror(ERR_INV_WALL, g, NULL, map[j + 1][i] == '0');
+// 			handle_error(ERR_INV_WALL, g, NULL, map[j + 1][i] == '0');
 // 	}
 // }
 
@@ -48,11 +48,11 @@
 // 		g->pl.position_y = (float)j;
 // 	}
 // 	else if (g->pl.dir && ft_strchr("NSWE", map[j][i]))
-// 		cub_perror(ERR_INV_PLAYER, g, NULL, 1);
+// 		handle_error(ERR_INV_PLAYER, g, NULL, 1);
 // 	else if (!ft_strchr("01oc", map[j][i]))
-// 		cub_perror(ERR_INV_CHARAC, g, NULL, 1);
+// 		handle_error(ERR_INV_CHARAC, g, NULL, 1);
 // 	if (j == g->height - 1 && !g->pl.dir)
-// 		cub_perror(ERR_INV_PLAYER, g, NULL, 1);
+// 		handle_error(ERR_INV_PLAYER, g, NULL, 1);
 // }
 
 // char	**alight_map_rowst_text_game *g)
@@ -112,9 +112,9 @@
 static void check_adjacent_walls(t_text_game *g, char **map, int i, int j)
 {
     if (i - 1 >= 0 && i - 1 < (int)ft_strlen(map[j]))
-        cub_perror(ERR_INV_WALL, g, NULL, map[j][i - 1] == '0');
+        handle_error(ERR_INV_WALL, g, NULL, map[j][i - 1] == '0');
     if (i + 1 >= 0 && i + 1 < (int)ft_strlen(map[j]))
-        cub_perror(ERR_INV_WALL, g, NULL, map[j][i + 1] == '0');
+        handle_error(ERR_INV_WALL, g, NULL, map[j][i + 1] == '0');
 }
 
 
@@ -133,14 +133,14 @@ static void check_surrounding_walls(t_text_game *g, char **map, int i, int j)
     {
         check_adjacent_walls(g, map, i, j - 1);
         if (i >= 0 && i < (int)ft_strlen(map[j - 1]))
-            cub_perror(ERR_INV_WALL, g, NULL, map[j - 1][i] == '0');
+            handle_error(ERR_INV_WALL, g, NULL, map[j - 1][i] == '0');
     }
     check_adjacent_walls(g, map, i, j);
     if (j + 1 >= 0 && j + 1 < g->height)
     {
         check_adjacent_walls(g, map, i, j + 1);
         if (i >= 0 && i < (int)ft_strlen(map[j + 1]))
-            cub_perror(ERR_INV_WALL, g, NULL, map[j + 1][i] == '0');
+            handle_error(ERR_INV_WALL, g, NULL, map[j + 1][i] == '0');
     }
 }
 
@@ -180,7 +180,7 @@ static void handle_player_direction(t_text_game *g, char character, int i, int j
     }
     else
     {
-        cub_perror(ERR_INV_PLAYER, g, NULL, 1);
+        handle_error(ERR_INV_PLAYER, g, NULL, 1);
     }
 }
 
@@ -195,7 +195,7 @@ static void handle_player_direction(t_text_game *g, char character, int i, int j
 static void check_invalid_character(char character, t_text_game *g)
 {
     if (!ft_strchr("01oc", character))
-        cub_perror(ERR_INV_CHARAC, g, NULL, 1);
+        handle_error(ERR_INV_CHARAC, g, NULL, 1);
 }
 
 
@@ -220,7 +220,7 @@ void check_characters(t_text_game *g, char **map, int i, int j)
     else
         check_invalid_character(character, g);
     if (j == g->height - 1 && !g->pl.dir)
-        cub_perror(ERR_INV_PLAYER, g, NULL, 1);
+        handle_error(ERR_INV_PLAYER, g, NULL, 1);
 }
 
 /**

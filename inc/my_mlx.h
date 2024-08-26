@@ -6,7 +6,7 @@
 /*   By: ogoman <ogoman@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 09:56:23 by ogoman            #+#    #+#             */
-/*   Updated: 2024/08/08 10:51:42 by ogoman           ###   ########.fr       */
+/*   Updated: 2024/08/11 09:52:00 by ogoman           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 #define MY_MLX_H
 
-#include "../libft/libft.h"
+// #include "../libft/libft.h"
 
 typedef struct s_img
 {

@@ -6,7 +6,7 @@
 /*   By: ogoman <ogoman@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 09:40:40 by ogoman            #+#    #+#             */
-/*   Updated: 2024/08/08 10:59:42 by ogoman           ###   ########.fr       */
+/*   Updated: 2024/08/11 12:35:26 by ogoman           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 # include "../libft/libft.h"
 # include "keycodes.h"
 # include <mlx.h>
-# include "get_next_line.h"
+# include "../get_next_line/get_next_line.h"
 # include "game_mlx.h"
 # include <stdio.h>
 # include <stdlib.h>
@@ -92,21 +92,9 @@ typedef struct s_player
     float position_y;    // Позиция игрока по оси Y
     char dir;           // Направление игрока
     float speed;        // Скорость игрока
-    int door_cooldown;  // Таймер для взаимодействия с дверями
+    int door_cooldown;  // взаимодействия с дверями
     t_key keys;         // Состояние клавиш игрока
 } t_player;
-
-/* Структура для хранения данных по лучам */
-typedef struct s_ray
-{
-    float angle_increment; // Угол между лучами
-    float current_angle;       // Текущий угол луча
-    float cos;         // Косинус угла луча
-    float sin;         // Синус угла луча
-    float hfov;        // Горизонтальное поле зрения
-    float max_distance;         // Предел расстояния для лучей
-    int precision;     // Точность расчета лучей
-} t_ray;
 
 /* Структура для хранения состояния игры */
 typedef struct s_text_game
@@ -115,19 +103,15 @@ typedef struct s_text_game
     char **map;         // Двумерный массив карты
     int height;        // Высота карты
     int width;         // Ширина карты
-    int mouse_x;       // X-координата мыши
     int rate;          // Частота обновления
-    int neg;           // Флаг инверсии цветов
     long frame_count;      // Количество кадров
     void *mlx_ptr;     // Указатель на MiniLibX
     void *win_ptr;     // Указатель на окно
     t_img win_img;     // Изображение окна
-
     t_img minimap;     // Миникарта
     t_img miniview;    // Мини-вид
     t_img *scope;      // Целевой прицел
     t_tex tex;         // Текстуры для игры
-    t_ray ray;         // Данные для лучей
     t_player pl;       // Игрок
     float x;           // Координата X (не используется в коде)
     float y;           // Координата Y (не используется в коде)
@@ -135,83 +119,104 @@ typedef struct s_text_game
 
 
 
+// colors.c
+/*Converts t_color components to ARGB integer value.*/
+int argb_from_color(t_color color);
 
-/* Check possible map errors */
-void	check_map(t_text_game *g);
-
-/* Reads file with gnl */
-void	read_map(char *file, t_text_game *g);
-
-/* Retrieves next line from a given fd */
-char	*get_next_line(int fd);
-
-/* Prints appropriate error message and exits, freeing everything */
-int		cub_perror(t_cub_err err, t_text_game *g, char *param, int c);
-
-/* Prints usage for the cub3D program */
-void	cub_usage(int errno);
-
-/* Function called by mlx when exiting */
-int		cub_exit(void *param);
-
-/* Atoi for colors (more restrictive than original) */
-int		cub_atoi(const char *nptr, long *nbr);
-
-/* Fills color int for floor and ceiling */
-void	get_cf_color(char **dir, t_text_game *g);
+/*Extracts ARGB components from an integer value into t_color structure.*/
+t_color color_from_argb(int color_value);
 
 /* Drecreases RGB value of color as object gets further */
 int		get_dist_color(int color, float ds, int tr);
 
-/* Frees all necessary things before exiting */
-void	cub_end(t_text_game *g);
+/* Inverts color of window-sized image */
+void	cub_invert_color(t_text_game *g);
+
+/* Fills color int for floor and ceiling */
+void	get_cf_color(char **dir, t_text_game *g);
+
+
+
+// end.c
+/*Frees allocated memory for animations starting from `start`.*/
+void	free_animation(t_text_game *g, t_list *start);
+
+/*Frees and destroys all images used in the game.*/
+void	destroy_images(t_text_game *g);
+
+/*Performs cleanup and frees all resources associated with the game.*/
+void	cleanup_game(t_text_game *g);
+
+
+
+// errors.c
+/* Prints appropriate error message and exits, freeing everything */
+int		handle_error(t_cub_err err, t_text_game *g, char *param, int c);
+
+/* Prints usage for the cub3D program */
+void	show_usage(int errno);
+
+/* Function called by mlx when exiting */
+int		cub_exit(void *param);
+
+
+
+// game_init.c
+/*Handles the event when a key is released.*/
+int cub_keyup(int k, t_text_game *g);
+
+/*Handles the event when a key is pressed.*/
+int cub_keydown(int k, t_text_game *g);
+
+/*Initializes attributes and settings for the game.*/
+void init_attr(t_text_game *g);
 
 /* Initializes game */
 void	game_init(t_text_game *g);
 
-/* Draws game */
-// void	drawt_text_game(t_text_game *g);
 
-/* Initialize raycast data */
-void	init_ray(t_text_game *g);
 
-/* Converts degrees to radians */
-float	degree_to_radians(float degree);
+// main.c
+/*Initializes the pointers to various sprite images and loads texture images.*/
+void	init_sprites(t_text_game *g);
 
-/* Draws a 2D minimap */
-void	cub_minimap(t_text_game *g);
+/*Main entry point of the program.*/
+int		main(int ac, char **av);
 
-/* Draws a section of the 2D minimap */
-void	cub_miniview(t_text_game *g);
 
-/* Function to shoot rays in a given direction to find walls */
-void	cub_raycast(t_text_game *g);
 
-/* Function called inside mlx loop */
-int		cub_update(void *param);
-
-/* Checks if there're c's in position range [n0,n1] of m */
-int		checkcn(char *m, char c, int n0, int n1);
-
+// map_checking.c
 /* Check every element of the map: spaces + characters */
 void	check_elements(t_text_game *g);
 
-/* Draws 3D view on window-sized image */
-void	cub_draw(t_text_game *g, int ray_count, float dis);
-
-/* Checks which wall has been hit to choose proper texture */
-t_img	*get_texture(t_text_game *g);
-
-/* Moves player depending on which key was pressed */
-void	move_pl(int k, t_text_game *g, float ray_cos, float ray_sin);
-
-/* Checks player surroundings to open/close doors */
-void	action_door(t_text_game *g);
-
-/* Inverts color of window-sized image */
-void	cub_invert_color(t_text_game *g);
-
 /* Adds spaces to end of all lines to ensure all lines have the same width */
 char	**alight_map_rows(t_text_game *g);
+
+/*Checks for valid characters in the map and assigns player information.*/
+void	check_characters(t_text_game *g, char **map, int i, int j);
+
+/*Checks the adjacent cells around the current position in the map for '0' characters.*/
+void check_walls(t_text_game *g, char **map, int i, int j);
+
+
+
+// map.c
+/*Adds an image to the animation list and manages image count.*/
+t_list *get_anim(t_img *img, t_list **anim, int (*n)[2]);
+
+/*Processes texture definitions and assigns them to the game structure.*/
+void	check_textures(char *trim, t_text_game *g, int (*n)[2]);
+
+/* Reads file with gnl */
+void	read_map(char *file, t_text_game *g);
+
+/* Check possible map errors */
+void	check_map(t_text_game *g);
+
+
+
+// utils.c
+/* Atoi for colors (more restrictive than original) */
+int		parse_color_value(const char *nptr, long *value);
 
 #endif

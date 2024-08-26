@@ -1,17 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   end_linux.c                                        :+:      :+:    :+:   */
+/*   end.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ogoman <ogoman@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/30 07:35:56 by ogoman            #+#    #+#             */
-/*   Updated: 2024/08/11 09:19:32 by ogoman           ###   ########.fr       */
+/*   Updated: 2024/08/11 12:24:35 by ogoman           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/cub3d.h"
 
+/**
+ * Frees the memory allocated for a linked list of animations and their associated images.
+ * 
+ * @param g A pointer to the game structure, used to access the MiniLibX context.
+ * @param start A pointer to the head of the linked list of animations.
+ */
 void	free_animation(t_text_game *g, t_list *start)
 {
 	t_list	*temp;
@@ -28,24 +34,22 @@ void	free_animation(t_text_game *g, t_list *start)
 	}
 }
 
+/**
+ * Destroys all images and other graphical resources associated with the game.
+ * 
+ * @param g A pointer to the game structure, used to access the MiniLibX context and graphical resources.
+ */
+
 void	destroy_images(t_text_game *g)
 {
 	free_animation(g, g->tex.n);
-	// free_animation(g, g->tex.n_bak);
 	free_animation(g, g->tex.s);
-	// free_animation(g, g->tex.s_bak);
 	free_animation(g, g->tex.e);
-	// free_animation(g, g->tex.e_bak);
 	free_animation(g, g->tex.w);
-	// free_animation(g, g->tex.w_bak);
 	if (g->tex.b && g->tex.b->i)
 		mlx_destroy_image(g->mlx_ptr, g->tex.b->i);
 	if (g->win_img.i)
 		mlx_destroy_image(g->mlx_ptr, g->win_img.i);
-	// if (g->win_g.i)
-	// 	mlx_destroy_image(g->mlx_ptr, g->win_g.i);
-	// if (g->win_r.i)
-	// 	mlx_destroy_image(g->mlx_ptr, g->win_r.i);
 	if (g->scope && g->scope->i)
 		mlx_destroy_image(g->mlx_ptr, g->scope->i);
 	if (g->win_ptr)
@@ -58,6 +62,11 @@ void	destroy_images(t_text_game *g)
 	free(g->scope);
 }
 
+/**
+ * Cleans up all game resources and closes the game.
+ * 
+ * @param g A pointer to the game structure, used to access and free various resources.
+ */
 void	cleanup_game(t_text_game *g)
 {
 	if (!g)

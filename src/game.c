@@ -6,7 +6,7 @@
 /*   By: ogoman <ogoman@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/30 07:36:24 by ogoman            #+#    #+#             */
-/*   Updated: 2024/08/08 10:51:07 by ogoman           ###   ########.fr       */
+/*   Updated: 2024/08/11 09:13:35 by ogoman           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ int	cub_keyup(int k, t_text_game *g)
 int	cub_keydown(int k, t_text_game *g)
 {
 	if (k == KEY_Q || k == KEY_ESC)
-		cub_perror(ERR_END, g, NULL, 1);
+		handle_error(ERR_END, g, NULL, 1);
 	else if (k == KEY_LEFT)
 		g->pl.keys.left_pressed = 1;
 	else if (k == KEY_RIGHT)
@@ -84,7 +84,7 @@ void	game_init(t_text_game *g)
 	mlx_hook(g->win_ptr, 02, 1L << 0, cub_keydown, g);
 	mlx_hook(g->win_ptr, 03, 1L << 1, cub_keyup, g);
 	mlx_hook(g->win_ptr, 17, 0, cub_exit, g);
-	mlx_hook(g->win_ptr, 06, 1L << 6, cub_mouse, g);
+	// mlx_hook(g->win_ptr, 06, 1L << 6, cub_mouse, g);
 	mlx_loop_hook(g->mlx_ptr, cub_update, g);
 	mlx_loop(g->mlx_ptr);
 }
